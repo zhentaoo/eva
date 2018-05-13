@@ -34,7 +34,40 @@ puppeteer.launch({headless: false}).then(async (browser) => {
       var submit = await page.$('#su')
       await submit.click()
     }
-    
-    baidu()
-    so()
+
+    var weibo = async () => {
+      var page = await browser.newPage();
+
+      await page.goto('https://weibo.com/')
+      await timeout(8000);
+
+      var input = await page.$('#weibo_top_public > div > div > div.gn_search_v2 > input')
+      input.click()
+      await page.type(key, {delay: 100})
+      await timeout(2000);
+      
+      var submit = await page.$('#weibo_top_public > div > div > div.gn_search_v2 > a')
+      await submit.click()
+    }
+
+  var jianshu = async () => {
+    var page = await browser.newPage();
+
+    await page.goto('https://www.jianshu.com')
+    await timeout(2000);
+
+    var input = await page.$('#q')
+    input.click()
+
+    await page.type(key, { delay: 1000 })
+    await timeout(2000);
+
+    var submit = await page.$('#menu > ul > li.search > form > a')
+    await submit.click()
+  }
+
+  jianshu()
+  baidu()
+  so()
+  weibo()
 });
