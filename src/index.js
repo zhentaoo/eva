@@ -84,7 +84,7 @@ puppeteer.launch({ headless: false }).then(async (browser) => {
       var list = [...document.querySelectorAll('.vrwrap')]
 
       return list.map(el => {
-        return { html: el.innerHTML, content: el.innerText }
+        return { html: el.innerHTML, content: el.innerText}
       })
     })
 
@@ -94,8 +94,8 @@ puppeteer.launch({ headless: false }).then(async (browser) => {
   }
 
 
-  // so()
-  // baidu()
-  // bing()
+  so()
+  baidu()
+  bing()
   sogou()
 });
