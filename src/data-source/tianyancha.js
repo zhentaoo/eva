@@ -1,3 +1,5 @@
+var fs = require("fs");
+
 module.exports = async (browser, timeout, key) => {
   var getDataFromDom = async () => {
     await timeout(1500);
@@ -8,10 +10,14 @@ module.exports = async (browser, timeout, key) => {
         return { html: el.innerHTML, content: el.innerText }
       })
     })
-
+    var content = []
     data.forEach(element => {
-      console.log(element.content)
+      content.push(element.content)
+      console.log(content)
     });
+
+    fs.appendFileSync('./src/data/tianyancha.txt', JSON.stringify(content)+'/n');
+    // await appendFile('../data/tianyancha.txt', JSON.stringify(data)+'/n', (err)=>{console.log(err)})
   }
 
   var page = await browser.newPage();

@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-var { timeout } = require('../tools/tools.js');
+var { timeout } = require('./tools/tools.js');
 var key = require('./config.js').key
 var company = require('./config.js').company
 
