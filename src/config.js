@@ -1,3 +1,3 @@
 module.exports = {
-    key: ' 投资'
+    key: ' 美女'
 }
