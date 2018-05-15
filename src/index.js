@@ -5,11 +5,7 @@ var company = require('./config.js').company
 
 console.log(key, company)
 puppeteer.launch({ headless: false }).then(async (browser) => {
-  var date = new Date()
-  var startTime = date.toUTCString() ;
-  console.log('startTime:', startTime);
-  
-  var endTime = null;
+  console.log('startTime:', new Date().toUTCString());
   try {
     /**
      * 搜索引擎
@@ -25,9 +21,7 @@ puppeteer.launch({ headless: false }).then(async (browser) => {
      */
     await require('./data-source/tianyancha.js')(browser, timeout, company)
   } catch (error) {
-    endTime = new Date().toUTCString();
-    console.log('endTime:', endTime);
+    console.log('endTime:', new Date().toUTCString());
   }
-  endTime = new Date().toUTCString();
-  console.log('endTime:', endTime);
+  console.log('endTime:', new Date().toUTCString());
 });

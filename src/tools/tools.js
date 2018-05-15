@@ -46,8 +46,3 @@ class Tools {
 }
 
 module.exports = Tools;
-
-
-Tools.appendFileSync('./src/data/tianyancha.txt', 'sdfsdf\rsdfa\r', (err)=>{
-    console.log(err)
-})

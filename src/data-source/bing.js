@@ -5,7 +5,7 @@ module.exports = async (browser, timeout, key) => {
   await page.type(key, { delay: 100 })
   var submit = await page.$('#sb_form_go')
   await submit.click()
-
+  
   await timeout(1500);
   var data = await page.evaluate(() => {
     var list = [...document.querySelectorAll('.b_algo')]

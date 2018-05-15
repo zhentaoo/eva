@@ -16,8 +16,9 @@ module.exports = async (browser, timeout, key) => {
       console.log(content)
     });
 
-    fs.appendFileSync('./src/data/tianyancha.txt', JSON.stringify(content)+'/n');
-    // await appendFile('../data/tianyancha.txt', JSON.stringify(data)+'/n', (err)=>{console.log(err)})
+    await fs.appendFileSync('./src/data/tianyancha.txt', `startTime: ${new Date().toUTCString()}`+'\r');
+    await fs.appendFileSync('./src/data/tianyancha.txt', JSON.stringify(content, null , ' ')+'\r');
+    await fs.appendFileSync('./src/data/tianyancha.txt', `endTime: ${new Date().toUTCString()}`+'\r\r');
   }
 
   var page = await browser.newPage();
@@ -25,11 +26,11 @@ module.exports = async (browser, timeout, key) => {
   await timeout(500);
   await getDataFromDom()
 
-  for (let index = 0; index < 3; index++) {
+  for (let index = 0; index < 10000000; index++) {
     var nextPage = await page.$('#web-content > div > div > div > div.col-9.search-2017-2.pr15.pl0 > div.b-c-white.clearfix.position-rel.mb30 > div > div.search_pager.human_pager.in-block > ul > li.pagination-next.ng-scope > a')
 
     await nextPage.click()
-    await timeout(2000 * Math.random());
+    await timeout(6 * 1000 * Math.random());
     await getDataFromDom()
   }
 }
