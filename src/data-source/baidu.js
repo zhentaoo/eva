@@ -1,35 +1,27 @@
-module.exports = async (browser, timeout, key) => {
-  var getDataFromDom = async () => {
-    await timeout(1500);
-    var data = await page.evaluate(() => {
-      var list = [...document.querySelectorAll('.c-container')]
+var fs = require("fs");
 
-      return list.map(el => {
-        return { html: el.innerHTML, content: el.innerText }
-      })
-    })
+// 搜索源
+const source = 'baidu'
 
-    data.forEach(element => {
-      console.log(element.content)
-    });
-  }
+// 路径
+const url = 'https://www.baidu.com'
 
-  var page = await browser.newPage();
-  await page.goto('https://www.baidu.com');
-  await timeout(1500);
-  await page.type(key, { delay: 100 })
-  var submit = await page.$('#su')
-  await submit.click()
-  await getDataFromDom()
-  
-  var nextPage = await page.$('#page > a.n')  
-  for (let index = 0; index < 20; index++) {
-    if(index > 0) {
-      var nextPage = await page.$('#page > a.n:last-child')  
-    }
-    
-    await nextPage.click()
-    await timeout(3000* Math.random());
-    await getDataFromDom()
-  }
+// 搜索按钮,选择器
+const submitSelectName = '#su'
+
+// 页面内容,选择器
+const domSelectName = '.c-container'
+
+// 下一页,选择器
+const nextPageSelectName = '#page > a:last-child'
+
+// 翻页数量
+const needPageMaxNum = 20
+
+module.exports = async(browser, timeout, key) => {
+  require('./template/search-engine.js')(
+    browser, timeout, key,
+    source, url, submitSelectName, domSelectName,
+    nextPageSelectName, needPageMaxNum
+  )
 }

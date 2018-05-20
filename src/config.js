@@ -1,4 +1,4 @@
 module.exports = {
-    key: ' 美女',
+    key: '投资',
     company: '互联网'
 }

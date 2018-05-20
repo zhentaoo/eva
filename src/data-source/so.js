@@ -1,30 +1,27 @@
-module.exports = async (browser, timeout, key) => {
-  var getDataFromDom = async () => {
-    await timeout(1500);
-    var data = await page.evaluate(() => {
-      var list = [...document.querySelectorAll('.res-list')]
-  
-      return list.map(el => {
-        return { html: el.innerHTML, content: el.innerText }
-      })
-    })
-  
-    data.forEach(element => {
-      console.log(element.content)
-    });
-  }
+var fs = require("fs");
 
-  var page = await browser.newPage();
-  await page.goto('https://www.so.com');
-  await timeout(1500);
-  await page.type(key, { delay: 100 })
-  var submit = await page.$('#search-button')
-  await submit.click()
-  await getDataFromDom()
+// 搜索源
+const source = 'so'
 
-  for (let index = 0; index < 25; index++) {
-    var nextPage = await page.$('#snext')
-    await nextPage.click()
-    await getDataFromDom()
-  }
+// 路径
+const url = 'https://www.so.com'
+
+// 搜索按钮,选择器
+const submitSelectName = '#search-button'
+
+// 页面内容,选择器
+const domSelectName = '.res-list'
+
+// 下一页,选择器
+const nextPageSelectName = '#snext'
+
+// 翻页数量
+const needPageMaxNum = 20
+
+module.exports = async(browser, timeout, key) => {
+  require('./template/search-engine.js')(
+    browser, timeout, key,
+    source, url, submitSelectName, domSelectName,
+    nextPageSelectName, needPageMaxNum
+  )
 }
