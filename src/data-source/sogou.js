@@ -1,23 +1,27 @@
-module.exports = async (browser, timeout, key) => {
-  var page = await browser.newPage();
-  await page.goto('https://www.sogou.com/');
-  await timeout(1500);
-  await page.type(key, { delay: 100 })
-  var submit = await page.$('#stb')
-  await submit.click()
+var fs = require("fs");
 
-  await timeout(1500);
-  var data = await page.evaluate(() => {
-    var list = [...document.querySelectorAll('.vrwrap')]
+// 搜索源
+const source = 'sogou'
 
-    return list.map(el => {
-      return { html: el.innerHTML, content: el.innerText }
-    })
-  })
+// 路径
+const url = 'https://www.sogou.com/'
 
-  data.forEach(element => {
-    console.log(element.content)
-  });
+// 搜索按钮,选择器
+const submitSelectName = '#stb'
 
-  await page.close()
+// 页面内容,选择器
+const domSelectName = '.vrwrap'
+
+// 下一页,选择器
+const nextPageSelectName = '#sogou_next'
+
+// 翻页数量
+const needPageMaxNum = 20
+
+module.exports = async(browser, timeout, key) => {
+  require('./template/search-engine.js')(
+    browser, timeout, key,
+    source, url, submitSelectName, domSelectName,
+    nextPageSelectName, needPageMaxNum
+  )
 }

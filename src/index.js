@@ -10,12 +10,11 @@ puppeteer.launch({ headless: false }).then(async (browser) => {
     /**
      * 搜索引擎
      */
-    
-    // require('./data-source/so.js')(browser, timeout, key)
-    // require('./data-source/sogou.js')(browser, timeout, key)
-    // require('./data-source/baidu.js')(browser, timeout, key)
+    await require('./data-source/so.js')(browser, timeout, key)
+    await require('./data-source/sogou.js')(browser, timeout, key)
+    await require('./data-source/baidu.js')(browser, timeout, key)
     await require('./data-source/bing.js')(browser, timeout, key)
-
+    
     /**
      * 其他
      */
