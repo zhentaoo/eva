@@ -1,4 +1,4 @@
 module.exports = {
-    key: '投资',
+    key: 'js中文分词',
     company: '互联网'
 }
