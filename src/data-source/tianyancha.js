@@ -16,9 +16,9 @@ module.exports = async (browser, timeout, key) => {
       console.log(content)
     });
 
-    await fs.appendFileSync('./src/data/tianyancha.txt', `startTime: ${new Date().toUTCString()}`+'\r');
-    await fs.appendFileSync('./src/data/tianyancha.txt', JSON.stringify(content, null , ' ')+'\r');
-    await fs.appendFileSync('./src/data/tianyancha.txt', `endTime: ${new Date().toUTCString()}`+'\r\r');
+    await fs.appendFileSync(`./src/data/tianyancha-${key}.txt`, `startTime: ${new Date().toUTCString()}`+'\r');
+    await fs.appendFileSync(`./src/data/tianyancha-${key}.txt`, JSON.stringify(content, null , ' ')+'\r');
+    await fs.appendFileSync(`./src/data/tianyancha-${key}.txt`, `endTime: ${new Date().toUTCString()}`+'\r\r');
   }
 
   var page = await browser.newPage();
@@ -33,4 +33,6 @@ module.exports = async (browser, timeout, key) => {
     await timeout(6 * 1000 * Math.random());
     await getDataFromDom()
   }
+
+  await page.close()
 }

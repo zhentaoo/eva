@@ -1,3 +1,5 @@
+var fs = require("fs");
+
 module.exports = async (browser, timeout, key) => {
   var getDataFromDom = async () => {
     await timeout(1500);
@@ -9,9 +11,15 @@ module.exports = async (browser, timeout, key) => {
       })
     })
 
+    var content = []
     data.forEach(element => {
-      console.log(element.content)
+      content.push(element.content)
+      console.log(content)
     });
+
+    await fs.appendFileSync(`./src/data/baidu-${key}.txt`, `startTime: ${new Date().toUTCString()}`+'\r');
+    await fs.appendFileSync(`./src/data/baidu-${key}.txt`, JSON.stringify(content, null , ' ')+'\r');
+    await fs.appendFileSync(`./src/data/baidu-${key}.txt`, `endTime: ${new Date().toUTCString()}`+'\r\r');
   }
 
   var page = await browser.newPage();
@@ -23,7 +31,7 @@ module.exports = async (browser, timeout, key) => {
   await getDataFromDom()
   
   var nextPage = await page.$('#page > a.n')  
-  for (let index = 0; index < 20; index++) {
+  for (let index = 0; index < 2; index++) {
     if(index > 0) {
       var nextPage = await page.$('#page > a.n:last-child')  
     }
@@ -32,4 +40,6 @@ module.exports = async (browser, timeout, key) => {
     await timeout(3000* Math.random());
     await getDataFromDom()
   }
+
+  await page.close()
 }

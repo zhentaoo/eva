@@ -18,4 +18,6 @@ module.exports = async (browser, timeout, key) => {
   data.forEach(element => {
     console.log(element.content)
   });
+
+  await page.close()
 }

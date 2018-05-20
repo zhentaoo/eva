@@ -27,4 +27,6 @@ module.exports = async (browser, timeout, key) => {
     await nextPage.click()
     await getDataFromDom()
   }
+
+  await page.close()
 }
