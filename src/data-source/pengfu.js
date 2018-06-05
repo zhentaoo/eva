@@ -1,6 +1,13 @@
 var fs = require("fs");
 var req = require('request-promise');
 var url = 'https://www.pengfu.com/'
+var origin_key = 'b61d91ea6c3'
+var crypto = require('crypto')
+var sha1 = crypto.createHash('sha1');
+var moment = require('moment')
+
+// sha1.update(moment().format('YYYY-MM-DD 00:00:00'))
+// console.log( sha1.digest('hex') ) 
 
 module.exports = async (browser, timeout, key) => {
   var getDataFromDom = async () => {
@@ -22,12 +29,20 @@ module.exports = async (browser, timeout, key) => {
       })
     })
     console.log(data)
+    
+    var str = moment().format('YYYY-MM-DD 00:00:00') + origin_key
+    console.log('str:', str)
+    sha1.update(str)
+    var keyCode = sha1.digest('hex') 
+    console.log('keyCode:', keyCode )
+    keyCode = keyCode.substr(-15)
+    console.log('keyCode15:', keyCode )
 
     var options = {
       method: 'POST',
       uri: 'http://juhe.qqeasy.com/information/import-jokes',
       body: {
-        "key": "eb7ca6b347b0572",
+        "key": keyCode,
         "from": url,
         "from_url": url,
         "create_time": new Date().toUTCString(),
@@ -37,9 +52,12 @@ module.exports = async (browser, timeout, key) => {
       },
       json: true // Automatically stringifies the body to JSON
     }
-    
-    let response = await req(options)
-    console.log(response)
+    try {
+      let response = await req(options)
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
 
     // await fs.appendFileSync(`./src/data/pengfu.txt`, `startTime: ${new Date().toUTCString()}`+'\r');
     await fs.appendFileSync(`./src/data/pengfu.txt`, JSON.stringify(data, null , ' ')+'\r');
