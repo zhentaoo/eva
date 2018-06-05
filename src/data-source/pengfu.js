@@ -19,10 +19,10 @@ module.exports = async (browser, timeout, key) => {
         return { 
           title: el.querySelector('.dp-b').innerText,
           content: el.querySelector('.content-img').innerText,
-          img: el.querySelector('.content-img > img') && el.querySelector('.content-img > img').src,
+          imgurl: el.querySelector('.content-img > img') && el.querySelector('.content-img > img').src,
           zan: el.querySelector('.fl .ding').innerText,
-          cai: el.querySelector('.fl .cai').innerText,
-          comment: el.querySelector('.fl .commentClick').innerText,
+          // cai: el.querySelector('.fl .cai').innerText,
+          comments: el.querySelector('.fl .commentClick').innerText,
           type: el.querySelectorAll('div.fr > a') 
             && ([...el.querySelectorAll('div.fr > a')].map(i => {return i.innerText}).join(','))
         }
