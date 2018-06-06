@@ -6,9 +6,6 @@ var crypto = require('crypto')
 var sha1 = crypto.createHash('sha1');
 var moment = require('moment')
 
-// sha1.update(moment().format('YYYY-MM-DD 00:00:00'))
-// console.log( sha1.digest('hex') ) 
-
 module.exports = async (browser, timeout, key) => {
   var getDataFromDom = async () => {
     await timeout(1500);
@@ -30,13 +27,16 @@ module.exports = async (browser, timeout, key) => {
     })
     console.log(data)
     
-    var str = moment().format('YYYY-MM-DD 00:00:00') + origin_key
-    console.log('str:', str)
-    sha1.update(str)
-    var keyCode = sha1.digest('hex') 
-    console.log('keyCode:', keyCode )
-    keyCode = keyCode.substr(-15)
-    console.log('keyCode15:', keyCode )
+    try {
+      var str = moment().format('YYYY-MM-DD 00:00:00') + origin_key
+      sha1.update(str)
+      var keyCode = sha1.digest('hex') 
+      console.log('keyCode:', keyCode )
+      keyCode = keyCode.substr(-15)
+      console.log('keyCode15:', keyCode )      
+    } catch (error) {
+      
+    }
 
     var options = {
       method: 'POST',
@@ -52,6 +52,7 @@ module.exports = async (browser, timeout, key) => {
       },
       json: true // Automatically stringifies the body to JSON
     }
+
     try {
       let response = await req(options)
       console.log(response)
@@ -59,9 +60,7 @@ module.exports = async (browser, timeout, key) => {
       console.log(error)
     }
 
-    // await fs.appendFileSync(`./src/data/pengfu.txt`, `startTime: ${new Date().toUTCString()}`+'\r');
     await fs.appendFileSync(`./src/data/pengfu.txt`, JSON.stringify(data, null , ' ')+'\r');
-    // await fs.appendFileSync(`./src/data/pengfu.txt`, `endTime: ${new Date().toUTCString()}`+'\r\r');
   }
 
   var page = await browser.newPage();

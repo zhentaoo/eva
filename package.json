@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node ./src/tools/tools.js",
-    "start": "node ./src/index.js"
+    "start": "node ./src/index.js",
+    "req": "node ./src/req.js"
   },
   "author": "",
   "license": "ISC",
