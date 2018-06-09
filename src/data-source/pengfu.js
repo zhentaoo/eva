@@ -6,6 +6,13 @@ var crypto = require('crypto')
 var sha1 = crypto.createHash('sha1');
 var moment = require('moment')
 
+var str = moment().format('YYYY-MM-DD 00:00:00') + origin_key
+sha1.update(str)
+var keyCode = sha1.digest('hex') 
+console.log('keyCode:', keyCode )
+keyCode = keyCode.substr(-15)
+console.log('keyCode15:', keyCode )    
+
 module.exports = async (browser, timeout, key) => {
   var getDataFromDom = async () => {
     await timeout(1500);
@@ -26,24 +33,13 @@ module.exports = async (browser, timeout, key) => {
       })
     })
     console.log(data)
-    
-    try {
-      var str = moment().format('YYYY-MM-DD 00:00:00') + origin_key
-      sha1.update(str)
-      var keyCode = sha1.digest('hex') 
-      console.log('keyCode:', keyCode )
-      keyCode = keyCode.substr(-15)
-      console.log('keyCode15:', keyCode )      
-    } catch (error) {
-      
-    }
 
     var options = {
       method: 'POST',
       uri: 'http://juhe.qqeasy.com/information/import-jokes',
       body: {
         "key": keyCode,
-        "from": url,
+        "from": '捧腹网',
         "from_url": url,
         "create_time": new Date().toUTCString(),
         "data": {
