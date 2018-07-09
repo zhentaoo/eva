@@ -8,10 +8,8 @@ var moment = require('moment')
 
 var str = moment().format('YYYY-MM-DD 00:00:00') + origin_key
 sha1.update(str)
-var keyCode = sha1.digest('hex') 
-console.log('keyCode:', keyCode )
+var keyCode = sha1.digest('hex')
 keyCode = keyCode.substr(-15)
-console.log('keyCode15:', keyCode )    
 
 module.exports = async (browser, timeout, key) => {
   var getDataFromDom = async () => {
@@ -20,20 +18,46 @@ module.exports = async (browser, timeout, key) => {
       var list = [...document.querySelectorAll('.list-item')]
 
       return list.map(el => {
-        return { 
+        return {
           title: el.querySelector('.dp-b').innerText,
           content: el.querySelector('.content-img').innerText,
           imgurl: el.querySelector('.content-img > img') && el.querySelector('.content-img > img').src,
+          cdn_img_url: null,
           zan: el.querySelector('.fl .ding').innerText,
-          // cai: el.querySelector('.fl .cai').innerText,
           comments: el.querySelector('.fl .commentClick').innerText,
-          type: el.querySelectorAll('div.fr > a') 
-            && ([...el.querySelectorAll('div.fr > a')].map(i => {return i.innerText}).join(','))
+          type: el.querySelectorAll('div.fr > a')
+            && ([...el.querySelectorAll('div.fr > a')].map(i => { return i.innerText }).join(','))
         }
       })
     })
-    console.log(data)
 
+    // 上传图片到图床
+    for (let index = 0; index < data.length; index++) {
+      const element = data[index];
+
+      console.log(element)
+      if (element.imgurl) {
+        var options = {
+          method: 'POST',
+          uri: 'https://pic.xiaojianjian.net/webtools/picbed/uploadByUrl.htm',
+          form: {
+            url: element.imgurl
+          }
+        };
+
+        try {
+          let data = await req(options)
+          data = JSON.parse(data)
+          element.cdn_img_url = data.original_pic
+        } catch (error) {
+          
+        }
+      }
+      console.log(element)
+    }
+    console.log(JSON.stringify(data))
+
+    // 传到数据库
     var options = {
       method: 'POST',
       uri: 'http://juhe.qqeasy.com/information/import-jokes',
@@ -43,20 +67,18 @@ module.exports = async (browser, timeout, key) => {
         "from_url": url,
         "create_time": new Date().toUTCString(),
         "data": {
-         "contents": data
+          "contents": data
         }
       },
-      json: true // Automatically stringifies the body to JSON
+      json: true
     }
 
     try {
       let response = await req(options)
-      console.log(response)
     } catch (error) {
-      console.log(error)
     }
 
-    await fs.appendFileSync(`./src/data/pengfu.txt`, JSON.stringify(data, null , ' ')+'\r');
+    await fs.appendFileSync(`./src/data/pengfu.txt`, JSON.stringify(data, null, ' ') + '\r');
   }
 
   var page = await browser.newPage();

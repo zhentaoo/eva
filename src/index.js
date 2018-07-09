@@ -22,6 +22,7 @@ console.log(key, company)
     await require('./data-source/pengfu.js')(browser, timeout, company)
     // await require('./data-source/tianyancha.js')(browser, timeout, company)
   } catch (error) {
+    console.log(error)
     console.log('endTime:', new Date().toUTCString());
   }
   console.log('endTime:', new Date().toUTCString());

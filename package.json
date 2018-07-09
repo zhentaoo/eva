@@ -6,12 +6,15 @@
   "scripts": {
     "test": "node ./src/tools/tools.js",
     "start": "node ./src/index.js",
-    "req": "node ./src/req.js"
+    "req": "node ./src/req.js",
+    "file": "node ./src/tools/file-upload.js",
+    "xx": "node ./src/tools/test.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "moment": "^2.22.2",
+    "multiparty": "^4.1.4",
     "puppeteer": "0.9.0",
     "request": "^2.87.0",
     "request-promise": "^4.2.2"
