@@ -34,8 +34,6 @@ module.exports = async (browser, timeout, key) => {
     // 上传图片到图床
     for (let index = 0; index < data.length; index++) {
       const element = data[index];
-
-      console.log(element)
       if (element.imgurl) {
         var options = {
           method: 'POST',
@@ -46,18 +44,18 @@ module.exports = async (browser, timeout, key) => {
         };
 
         try {
-          let data = await req(options)
-          data = JSON.parse(data)
-          element.cdn_img_url = data.original_pic
+          let response = await req(options)
+          response = JSON.parse(response)
+          data[index].cdn_img_url = response.original_pic
         } catch (error) {
-          
+          console.log(error)
         }
-      }
-      console.log(element)
-    }
-    console.log(JSON.stringify(data))
 
-    // 传到数据库
+      }
+    }
+    console.log('data:', JSON.stringify(data))
+
+    // 上传到qqeasy数据库
     var options = {
       method: 'POST',
       uri: 'http://juhe.qqeasy.com/information/import-jokes',
@@ -75,8 +73,7 @@ module.exports = async (browser, timeout, key) => {
 
     try {
       let response = await req(options)
-    } catch (error) {
-    }
+    } catch (error) {}
 
     await fs.appendFileSync(`./src/data/pengfu.txt`, JSON.stringify(data, null, ' ') + '\r');
   }
