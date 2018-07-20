@@ -21,7 +21,7 @@ module.exports = async (browser, timeout, key) => {
         return {
           title: el.querySelector('.dp-b').innerText,
           content: el.querySelector('.content-img').innerText,
-          imgurl: el.querySelector('.content-img > img') && el.querySelector('.content-img > img').src,
+          imgurl: el.querySelector('.content-img > img') ? (el.querySelector('.content-img > img').getAttribute('gifsrc') || el.querySelector('.content-img > img').src) : null,
           cdn_img_url: null,
           zan: el.querySelector('.fl .ding').innerText,
           comments: el.querySelector('.fl .commentClick').innerText,
@@ -30,35 +30,18 @@ module.exports = async (browser, timeout, key) => {
         }
       })
     })
-
-    // 上传图片到图床
-    for (let index = 0; index < data.length; index++) {
-      const element = data[index];
-      if (element.imgurl) {
-        var options = {
-          method: 'POST',
-          uri: 'https://pic.xiaojianjian.net/webtools/picbed/uploadByUrl.htm',
-          form: {
-            url: element.imgurl
-          }
-        };
-
-        try {
-          let response = await req(options)
-          response = JSON.parse(response)
-          data[index].cdn_img_url = response.original_pic
-        } catch (error) {
-          console.log(error)
-        }
-
-      }
-    }
     console.log('data:', JSON.stringify(data))
-
-    // 上传到qqeasy数据库
+    
+    // 写文件
+    try {
+      await fs.appendFileSync(`./src/data/pengfu.txt`, JSON.stringify(data, null, ' ') + '\r');
+    } catch (error) {
+      console.log('err:', error)
+    }
     var options = {
       method: 'POST',
-      uri: 'http://juhe.qqeasy.com/information/import-jokes',
+      timeout: 3000000,
+      uri: 'https://juhe.qqeasy.com/information/import-jokes',
       body: {
         "key": keyCode,
         "from": '捧腹网',
@@ -70,18 +53,20 @@ module.exports = async (browser, timeout, key) => {
       },
       json: true
     }
-
+    
     try {
       let response = await req(options)
-    } catch (error) {}
-
-    await fs.appendFileSync(`./src/data/pengfu.txt`, JSON.stringify(data, null, ' ') + '\r');
+      console.log('res:', response)
+    } catch (error) {
+      console.log('err:', error)
+    }
   }
 
   var page = await browser.newPage();
   await page.goto(url);
-  await timeout(500);
-  await getDataFromDom()
+  // await timeout(500);
+  console.log('aaa')
+  // await getDataFromDom()
 
   for (let index = 0; index < 10000000; index++) {
     var nextPage = await page.$('.page > div > a:last-child')

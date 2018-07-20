@@ -4,7 +4,7 @@ var key = require('./config.js').key
 var company = require('./config.js').company
 
 console.log(key, company)
-// puppeteer.launch().then(async (browser) => {
+  // puppeteer.launch().then(async (browser) => {
   puppeteer.launch({ headless: false }).then(async (browser) => {
   // console.log('startTime:', new Date().toUTCString());
   try {
