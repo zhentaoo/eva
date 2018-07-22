@@ -17,9 +17,14 @@ console.log(key, company)
     // await require('./data-source/bing.js')(browser, timeout, key)
     
     /**
-     * 其他
+     * 段子
      */
-    await require('./data-source/pengfu.js')(browser, timeout, company)
+    // await require('./duanzi/pengfu.js')(browser, timeout, company)
+    await require('./duanzi/qiubai-detail.js')(browser, timeout, company)
+    
+    /**
+     * 企业信息
+     */
     // await require('./data-source/tianyancha.js')(browser, timeout, company)
   } catch (error) {
     console.log(error)
