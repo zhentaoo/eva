@@ -7,6 +7,10 @@ var crypto = require('crypto')
 var sha1 = crypto.createHash('sha1');
 var moment = require('moment')
 
+var url = 'https://www.pengfu.com/qutu_18.html'
+var fromName = '捧腹'
+var fromFileName = 'pengfu'
+
 var str = moment().format('YYYY-MM-DD 00:00:00') + origin_key
 sha1.update(str)
 var keyCode = sha1.digest('hex')
@@ -34,58 +38,13 @@ module.exports = async (browser, timeout, key) => {
     console.log('data:', JSON.stringify(data))
     
     // 上传图片
-    for (let i = 0 ; i < data.length; i++) {
-      let item = data[i]
-      if (!item.imgurl) {
-        continue
-      }
-      console.log('上传图片')
-
-      try {
-        let imgurl = item.imgurl
-        let type = imgurl.split('.').pop()
-    
-        let response = await req('https://api.yum6.cn/sinaimg.php?img=' + imgurl)
-        response = JSON.parse(response)
-        let cdn_img_url = 'https://ww2.sinaimg.cn/large/' + response.pid + '.' + type
-        item.cdn_img_url = cdn_img_url
-        console.log(JSON.stringify(item))
-      } catch (error) {
-        console.log(i, error)
-      }
-    }
-
-    console.log('data:', JSON.stringify(data))
+    data = await common.uploadImg(data)
 
     // 写文件
-    try {
-      await fs.appendFileSync(`./src/data/pengfu.txt`, JSON.stringify(data, null, ' ') + '\r');
-    } catch (error) {
-      console.log('err:', error)
-    }
+    await common.wirteFile(data, fromFileName)
 
-    var options = {
-      method: 'POST',
-      timeout: 3000000,
-      uri: 'https://juhe.qqeasy.com/information/import-jokes',
-      body: {
-        "key": keyCode,
-        "from": '捧腹网',
-        "from_url": url,
-        "create_time": new Date().toUTCString(),
-        "data": {
-          "contents": data
-        }
-      },
-      json: true
-    }
-    
-    try {
-      let response = await req(options)
-      console.log('res:', response)
-    } catch (error) {
-      console.log('err:', error)
-    }
+    // 上传到后台
+    await common.uploadData(fromName, data, url)
   }
 
   var page = await browser.newPage();

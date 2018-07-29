@@ -13,6 +13,7 @@ module.exports = {
     // 上传图片文件
     uploadImg: async (data) => {
         for (let i = 0; i < data.length; i++) {
+            
             let item = data[i]
             if (!item.imgurl) {
                 continue

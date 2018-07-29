@@ -15,26 +15,21 @@ var fromName = '糗百'
 var fromFileName = 'qiubai-detail'
 
 module.exports = async (browser, timeout, key) => {
+  // 从DOM爬取数据
   var getDataFromDom = async () => {
     await timeout(1500);
-    console.log('getDataFromDom')
-
+    
     var data = await page.evaluate(() => {
-      var content = document.querySelector('.content') ? document.querySelector('.content').innerText : null
-      console.log('content:', JSON.stringify(content))
-
-      var imgUrl = document.querySelector('.thumb img') ? document.querySelector('.thumb img').src : null
       var discuss = []
       document.querySelectorAll('.comments-table .main-text').forEach(el => {
         discuss.push(el.innerText)
       })
-      console.log(discuss)
 
       return {
         title: null,
-        content: content,
+        content: document.querySelector('.content') ? document.querySelector('.content').innerText : null,
         discuss: JSON.stringify(discuss),
-        imgurl: imgUrl,
+        imgurl: document.querySelector('.thumb img') ? document.querySelector('.thumb img').src : null,
         cdn_img_url: null,
         zan: document.querySelector('.stats-vote .number').innerText,
         comments: document.querySelector('.stats-comments .number').innerText,
@@ -42,6 +37,8 @@ module.exports = async (browser, timeout, key) => {
       }
     })
     data = [data]
+    
+    console.log(data)
     // 上传图片
     data = await common.uploadImg(data)
 
@@ -54,12 +51,13 @@ module.exports = async (browser, timeout, key) => {
 
   var page = await browser.newPage();
   await page.goto(url);
-  await timeout(500);
+  await timeout(1000);
+  console.log(99)
   await getDataFromDom()
 
   for (let index = 0; index < 10000000; index++) {
     var nextPage = await page.$('.page-nav-list-next')
-    
+
     await nextPage.click()
     await timeout(6 * 1000 * Math.random());
     await getDataFromDom()
