@@ -8,7 +8,7 @@
     "start": "node ./src/index.js",
     "req": "node ./src/req.js",
     "file": "node ./src/tools/file-upload.js",
-    "xx": "node ./src/tools/test.js"
+    "img": "node ./src/tools/img-sina.js"
   },
   "author": "",
   "license": "ISC",

@@ -1,6 +1,6 @@
 var fs = require("fs");
 var req = require('request-promise');
-var url = 'https://www.qiushibaike.com/article/120640684'
+var url = 'https://www.qiushibaike.com/article/119626024'
 
 var origin_key = 'b61d91ea6c3'
 var crypto = require('crypto')
@@ -21,7 +21,7 @@ module.exports = async (browser, timeout, key) => {
 
       var imgUrl = document.querySelector('.thumb img') ? document.querySelector('.thumb img').src : null
       var discuss = []
-      document.querySelectorAll('.comments-table').forEach(el => {
+      document.querySelectorAll('.comments-table .main-text').forEach(el => {
         discuss.push(el.innerText)
       })
       console.log(discuss)

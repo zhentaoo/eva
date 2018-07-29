@@ -19,8 +19,8 @@ console.log(key, company)
     /**
      * 段子
      */
-    // await require('./duanzi/pengfu.js')(browser, timeout, company)
-    await require('./duanzi/qiubai-detail.js')(browser, timeout, company)
+    await require('./duanzi/pengfu.js')(browser, timeout, company)
+    // await require('./duanzi/qiubai-detail.js')(browser, timeout, company)
     
     /**
      * 企业信息

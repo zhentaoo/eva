@@ -1,6 +1,5 @@
 var fs = require("fs");
 var req = require('request-promise');
-// var url = 'https://www.qiushibaike.com/'
 var url = 'https://www.pengfu.com/'
 
 var origin_key = 'b61d91ea6c3'
@@ -34,12 +33,37 @@ module.exports = async (browser, timeout, key) => {
     })
     console.log('data:', JSON.stringify(data))
     
+    // 上传图片
+    for (let i = 0 ; i < data.length; i++) {
+      let item = data[i]
+      if (!item.imgurl) {
+        continue
+      }
+      console.log('上传图片')
+
+      try {
+        let imgurl = item.imgurl
+        let type = imgurl.split('.').pop()
+    
+        let response = await req('https://api.yum6.cn/sinaimg.php?img=' + imgurl)
+        response = JSON.parse(response)
+        let cdn_img_url = 'https://ww2.sinaimg.cn/large/' + response.pid + '.' + type
+        item.cdn_img_url = cdn_img_url
+        console.log(JSON.stringify(item))
+      } catch (error) {
+        console.log(i, error)
+      }
+    }
+
+    console.log('data:', JSON.stringify(data))
+
     // 写文件
     try {
       await fs.appendFileSync(`./src/data/pengfu.txt`, JSON.stringify(data, null, ' ') + '\r');
     } catch (error) {
       console.log('err:', error)
     }
+
     var options = {
       method: 'POST',
       timeout: 3000000,
