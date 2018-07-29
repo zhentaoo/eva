@@ -3,10 +3,9 @@ var { timeout } = require('./tools/tools.js');
 var key = require('./config.js').key
 var company = require('./config.js').company
 
-console.log(key, company)
-  // puppeteer.launch().then(async (browser) => {
-  puppeteer.launch({ headless: false }).then(async (browser) => {
-  // console.log('startTime:', new Date().toUTCString());
+// puppeteer.launch().then(async (browser) => {
+puppeteer.launch({ headless: false }).then(async (browser) => {
+  console.log('startTime:', new Date().toUTCString());
   try {
     /**
      * 搜索引擎
@@ -15,13 +14,14 @@ console.log(key, company)
     // await require('./data-source/sogou.js')(browser, timeout, key)
     // await require('./data-source/baidu.js')(browser, timeout, key)
     // await require('./data-source/bing.js')(browser, timeout, key)
-    
+
     /**
      * 段子
      */
-    await require('./duanzi/pengfu.js')(browser, timeout, company)
+    // await require('./duanzi/pengfu.js')(browser, timeout, company)
     // await require('./duanzi/qiubai-detail.js')(browser, timeout, company)
-    
+    await require('./duanzi/budejie-detail.js')(browser, timeout, company)
+
     /**
      * 企业信息
      */

@@ -1,40 +1,45 @@
-var fs = require("fs");
-var req = require('request-promise');
-var url = 'https://www.pengfu.com/qutu_18.html'
-
 var origin_key = 'b61d91ea6c3'
 var crypto = require('crypto')
 var sha1 = crypto.createHash('sha1');
 var moment = require('moment')
-
 var str = moment().format('YYYY-MM-DD 00:00:00') + origin_key
 sha1.update(str)
 var keyCode = sha1.digest('hex')
 keyCode = keyCode.substr(-15)
+var fs = require("fs");
+var req = require('request-promise');
+
+var url = 'http://www.budejie.com/detail-28358081.html'
+var fromName = '不得姐'
+var fromFileName = 'budejie'
 
 module.exports = async (browser, timeout, key) => {
   var getDataFromDom = async () => {
     await timeout(1500);
     var data = await page.evaluate(() => {
-      var list = [...document.querySelectorAll('.list-item')]
-
-      return list.map(el => {
-        return {
-          title: el.querySelector('.dp-b').innerText,
-          content: el.querySelector('.content-img').innerText,
-          imgurl: el.querySelector('.content-img > img') ? (el.querySelector('.content-img > img').getAttribute('gifsrc') || el.querySelector('.content-img > img').src) : null,
-          cdn_img_url: null,
-          zan: el.querySelector('.fl .ding').innerText,
-          comments: el.querySelector('.fl .commentClick').innerText,
-          type: el.querySelectorAll('div.fr > a')
-            && ([...el.querySelectorAll('div.fr > a')].map(i => { return i.innerText }).join(','))
-        }
+      let discuss = []
+      document.querySelectorAll('#hotCommentList').forEach(el => {
+        let txt = el.querySelector('.g-mnc1').innerText
+        discuss.push(txt.trim())
       })
+
+      return {
+        title: null,
+        content: document.querySelector('.j-r-list-c-desc') ? document.querySelector('.j-r-list-c-desc').innerText : null,
+        discuss: JSON.stringify(discuss),
+        imgurl: document.querySelector('.j-r-list-c-img > img') ? document.querySelector('.j-r-list-c-img > img').src : null,
+        cdn_img_url: null,
+        zan: document.querySelector('.j-r-list-tool-l-up').innerText.trim(),
+        comments: document.querySelector('.comment-counts').innerText.trim(),
+        type: null
+      }
     })
+
+    data = [data]
     console.log('data:', JSON.stringify(data))
-    
+
     // 上传图片
-    for (let i = 0 ; i < data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
       let item = data[i]
       if (!item.imgurl) {
         continue
@@ -44,8 +49,10 @@ module.exports = async (browser, timeout, key) => {
       try {
         let imgurl = item.imgurl
         let type = imgurl.split('.').pop()
-    
-        let response = await req('https://api.yum6.cn/sinaimg.php?img=' + imgurl)
+
+        let response = await req({
+          url: 'https://api.yum6.cn/sinaimg.php?img=' + imgurl
+        })
         response = JSON.parse(response)
         let cdn_img_url = 'https://ww2.sinaimg.cn/large/' + response.pid + '.' + type
         item.cdn_img_url = cdn_img_url
@@ -54,23 +61,24 @@ module.exports = async (browser, timeout, key) => {
         console.log(i, error)
       }
     }
-
+    
     console.log('data:', JSON.stringify(data))
 
     // 写文件
     try {
-      await fs.appendFileSync(`./src/data/pengfu.txt`, JSON.stringify(data, null, ' ') + '\r');
+      await fs.appendFileSync(`./src/data/${fromFileName}.txt`, JSON.stringify(data[0], null, ' ') + '\r');
     } catch (error) {
       console.log('err:', error)
     }
 
+    // 上传到后台
     var options = {
       method: 'POST',
       timeout: 3000000,
       uri: 'https://juhe.qqeasy.com/information/import-jokes',
       body: {
         "key": keyCode,
-        "from": '捧腹网',
+        "from": fromName,
         "from_url": url,
         "create_time": new Date().toUTCString(),
         "data": {
@@ -79,7 +87,7 @@ module.exports = async (browser, timeout, key) => {
       },
       json: true
     }
-    
+
     try {
       let response = await req(options)
       console.log('res:', response)
@@ -90,7 +98,6 @@ module.exports = async (browser, timeout, key) => {
 
   var page = await browser.newPage();
   await page.goto(url);
-  await timeout(500);
   await getDataFromDom()
 
   for (let index = 0; index < 10000000; index++) {
