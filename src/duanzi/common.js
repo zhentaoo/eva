@@ -10,46 +10,67 @@ var keyCode = sha1.digest('hex')
 keyCode = keyCode.substr(-15)
 
 var proxyPool = [
-    'http://110.73.7.162:8123',
-    'http://119.28.203.242:9000',
-    'http://222.88.149.32:8060',
-    'http://118.190.95.43:9001',
-    'http://144.0.111.107:8060',
-    'http://120.131.9.254:1080',
-    'http://121.18.231.74:80',
-    'http://39.137.69.9:80',
-    'http://103.242.219.242:8080',
-    'http://119.28.194.66:8888',
+    'http://119.27.177.169:80',
+    // 'http://110.73.7.162:8123',
+    // 'http://119.28.203.242:9000',
+    // 'http://222.88.149.32:8060',
+    // 'http://118.190.95.43:9001',
+    // 'http://144.0.111.107:8060',
+    // 'http://120.131.9.254:1080',
+    // 'http://121.18.231.74:80',
+    // 'http://39.137.69.9:80',
+    // 'http://103.242.219.242:8080',
+    // 'http://119.28.194.66:8888',
 ]
 
 module.exports = {
     // 上传图片文件
     uploadImg: async (data) => {
         for (let i = 0; i < data.length; i++) {
-            
+
             let item = data[i]
             if (!item.imgurl) {
                 continue
             }
-            try {
-                console.log('上传图片')
-                let imgurl = item.imgurl
-                let type = imgurl.split('.').pop()
-                let rdProxy = Math.floor(Math.random()* proxyPool.length )
-                console.log(proxyPool[rdProxy])
 
-                let response = await req({
-                    url: 'https://api.yum6.cn/sinaimg.php?img=' + imgurl,
-                    proxy: proxyPool[rdProxy]
-                })
-                console.log('response:', response)
+            if (1) {
+                // 小贱图床，（实际新浪）
+                try {
+                    console.log('上传 小贱－图片')
+                    let imgurl = item.imgurl
+                    let type = imgurl.split('.').pop()
+                    let response = await req({
+                        url: `https://pic.xiaojianjian.net/webtools/picbed/uploadByUrl.htm?url=${imgurl}`
+                    })
+                    console.log('response:', response)
 
-                response = JSON.parse(response)
-                let cdn_img_url = 'https://ww2.sinaimg.cn/large/' + response.pid + '.' + type
-                item.cdn_img_url = cdn_img_url
-            } catch (error) {
-                console.log(i, error)
+                    response = JSON.parse(response)
+                    let cdn_img_url = response.original_pic
+                    item.cdn_img_url = cdn_img_url
+                } catch (error) { }
+            } else {
+                // yum6图床（实际新浪）
+                try {
+                    console.log('上传 yum6-图片')
+                    let imgurl = item.imgurl
+                    let type = imgurl.split('.').pop()
+                    let rdProxy = Math.floor(Math.random() * proxyPool.length)
+                    console.log(proxyPool[rdProxy])
+
+                    let response = await req({
+                        url: 'https://api.yum6.cn/sinaimg.php?img=' + imgurl,
+                        // proxy: proxyPool[rdProxy]
+                    })
+                    console.log('response:', response)
+
+                    response = JSON.parse(response)
+                    let cdn_img_url = 'https://ww2.sinaimg.cn/large/' + response.pid + '.' + type
+                    item.cdn_img_url = cdn_img_url
+                } catch (error) {
+                    console.log(i, error)
+                }
             }
+
         }
         return data
     },

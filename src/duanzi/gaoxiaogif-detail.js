@@ -10,7 +10,7 @@ var fs = require("fs");
 var req = require('request-promise');
 var common = require('./common.js')
 
-var url = 'http://www.gaoxiaogif.cn/gif-774.html'
+var url = 'http://www.gaoxiaogif.cn/gif-391.html'
 var fromName = '搞笑动图'
 var fromFileName = 'gaoxiaogif'
 
