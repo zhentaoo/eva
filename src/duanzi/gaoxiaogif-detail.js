@@ -10,9 +10,9 @@ var fs = require("fs");
 var req = require('request-promise');
 var common = require('./common.js')
 
-var url = 'http://www.budejie.com/detail-28376314.html'
-var fromName = '不得姐'
-var fromFileName = 'budejie'
+var url = 'http://www.gaoxiaogif.cn/gif-774.html'
+var fromName = '搞笑动图'
+var fromFileName = 'gaoxiaogif'
 
 module.exports = async (browser, timeout, key) => {
   var getDataFromDom = async () => {
@@ -20,21 +20,20 @@ module.exports = async (browser, timeout, key) => {
 
     var data = await page.evaluate(() => {
       let discuss = []
-      document.querySelectorAll('#hotCommentList').forEach(el => {
-        if (el.querySelector('.g-mnc1') && el.querySelector('.g-mnc1').innerText) {
-          let txt = el.querySelector('.g-mnc1').innerText
-          discuss.push(txt.trim())
+      document.querySelectorAll('.box-s li').forEach(el => {
+        if(el.querySelector('.content') && el.querySelector('.content').innerText) {
+          discuss.push(el.querySelector('.content').innerText.split('：')[1])
         }
       })
 
       return {
         title: null,
-        content: document.querySelector('.j-r-list-c-desc') ? document.querySelector('.j-r-list-c-desc').innerText : null,
+        content: document.querySelector('.showtxt') ? document.querySelector('.showtxt').innerText : null,
         discuss: JSON.stringify(discuss),
-        imgurl: document.querySelector('.j-r-list-c-img > img') ? document.querySelector('.j-r-list-c-img > img').src : null,
+        imgurl: document.querySelector('.imgp img') ? document.querySelector('.imgp img').src : null,
         cdn_img_url: null,
-        zan: document.querySelector('.j-r-list-tool-l-up').innerText.trim(),
-        comments: document.querySelector('.comment-counts').innerText.trim(),
+        zan: document.querySelector('.up').innerText,
+        comments: null,
         type: null
       }
     })
@@ -55,7 +54,7 @@ module.exports = async (browser, timeout, key) => {
   await getDataFromDom()
 
   for (let index = 0; index < 10000000; index++) {
-    var nextPage = await page.$('.c-next-btn')
+    var nextPage = await page.$('.fr a')
     
     await nextPage.click()
     await timeout(6 * 1000 * Math.random());

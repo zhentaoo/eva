@@ -9,6 +9,19 @@ sha1.update(str)
 var keyCode = sha1.digest('hex')
 keyCode = keyCode.substr(-15)
 
+var proxyPool = [
+    'http://110.73.7.162:8123',
+    'http://119.28.203.242:9000',
+    'http://222.88.149.32:8060',
+    'http://118.190.95.43:9001',
+    'http://144.0.111.107:8060',
+    'http://120.131.9.254:1080',
+    'http://121.18.231.74:80',
+    'http://39.137.69.9:80',
+    'http://103.242.219.242:8080',
+    'http://119.28.194.66:8888',
+]
+
 module.exports = {
     // 上传图片文件
     uploadImg: async (data) => {
@@ -22,8 +35,13 @@ module.exports = {
                 console.log('上传图片')
                 let imgurl = item.imgurl
                 let type = imgurl.split('.').pop()
+                let rdProxy = Math.floor(Math.random()* proxyPool.length )
+                console.log(proxyPool[rdProxy])
 
-                let response = await req('https://api.yum6.cn/sinaimg.php?img=' + imgurl)
+                let response = await req({
+                    url: 'https://api.yum6.cn/sinaimg.php?img=' + imgurl,
+                    proxy: proxyPool[rdProxy]
+                })
                 console.log('response:', response)
 
                 response = JSON.parse(response)
