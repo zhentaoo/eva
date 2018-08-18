@@ -33,7 +33,7 @@ module.exports = {
                 continue
             }
 
-            if (1) {
+            if (0) {
                 // 小贱图床，（实际新浪）
                 try {
                     console.log('上传 小贱－图片')
