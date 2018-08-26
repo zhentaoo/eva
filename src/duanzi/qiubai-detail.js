@@ -10,7 +10,7 @@ var keyCode = sha1.digest('hex')
 keyCode = keyCode.substr(-15)
 var common = require('./common.js')
 
-var url = 'https://www.qiushibaike.com/article/120754772'
+var theUrl = 'https://www.qiushibaike.com'
 var fromName = '糗百'
 var fromFileName = 'qiubai-detail'
 
@@ -18,7 +18,7 @@ module.exports = async (browser, timeout, key) => {
   // 从DOM爬取数据
   var getDataFromDom = async () => {
     await timeout(1500);
-    
+
     var data = await page.evaluate(() => {
       var discuss = []
       document.querySelectorAll('.comments-table .main-text').forEach(el => {
@@ -37,7 +37,7 @@ module.exports = async (browser, timeout, key) => {
       }
     })
     data = [data]
-    
+
     console.log(data)
     // 上传图片
     // data = await common.uploadImg(data)
@@ -46,13 +46,22 @@ module.exports = async (browser, timeout, key) => {
     await common.wirteFile(data, fromFileName)
 
     // 上传到后台
-    await common.uploadData(fromName, data, url)
+    console.log('firstUrl2:', firstUrl)
+    await common.uploadData(fromName, data, firstUrl)
   }
 
   var page = await browser.newPage();
-  await page.goto(url);
-  await timeout(1000);
-  console.log(99)
+  await page.goto(theUrl)
+  await timeout(2000)
+
+  var firstUrl = await page.evaluate(() => {
+    var url = document.querySelector('.contentHerf').href;
+    return url
+  })
+  console.log('firstUrl:', firstUrl)
+
+  await page.goto(firstUrl);
+  await timeout(2000);
   await getDataFromDom()
 
   for (let index = 0; index < 10000000; index++) {

@@ -10,7 +10,7 @@ var fs = require("fs");
 var req = require('request-promise');
 var common = require('./common.js')
 
-var url = 'http://www.gaoxiaogif.cn/gif-855.html'
+var theUrl = 'http://www.gaoxiaogif.cn'
 var fromName = '搞笑动图'
 var fromFileName = 'gaoxiaogif'
 
@@ -21,7 +21,7 @@ module.exports = async (browser, timeout, key) => {
     var data = await page.evaluate(() => {
       let discuss = []
       document.querySelectorAll('.box-s li').forEach(el => {
-        if(el.querySelector('.content') && el.querySelector('.content').innerText) {
+        if (el.querySelector('.content') && el.querySelector('.content').innerText) {
           discuss.push(el.querySelector('.content').innerText.split('：')[1])
         }
       })
@@ -46,20 +46,30 @@ module.exports = async (browser, timeout, key) => {
     await common.wirteFile(data, fromFileName)
 
     // 上传到后台
-    await common.uploadData(fromName, data, url)
+    console.log('firstUrl2:', firstUrl)
+    await common.uploadData(fromName, data, firstUrl)
   }
 
   var page = await browser.newPage();
-  await page.goto(url);
+  await page.goto(theUrl)
+  await timeout(2000)
+
+  var firstUrl = await page.evaluate(() => {
+    var url = document.querySelector('.img > a').href;
+    return url
+  })
+  console.log('firstUrl:', firstUrl)
+
+  await page.goto(firstUrl);
+  await timeout(2000);
   await getDataFromDom()
 
   for (let index = 0; index < 10000000; index++) {
     var nextPage = await page.$('.fr a')
-    
+
     await nextPage.click()
     await timeout(6 * 1000 * Math.random());
     await getDataFromDom()
   }
-
   await page.close()
 }

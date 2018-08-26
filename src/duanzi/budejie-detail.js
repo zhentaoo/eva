@@ -10,7 +10,8 @@ var fs = require("fs");
 var req = require('request-promise');
 var common = require('./common.js')
 
-var url = 'http://www.budejie.com/detail-28376314.html'
+var theUrl = 'http://www.budejie.com'
+
 var fromName = '不得姐'
 var fromFileName = 'budejie'
 
@@ -47,20 +48,29 @@ module.exports = async (browser, timeout, key) => {
     await common.wirteFile(data, fromFileName)
 
     // 上传到后台
-    await common.uploadData(fromName, data, url)
+    await common.uploadData(fromName, data, firstUrl)
   }
 
   var page = await browser.newPage();
-  await page.goto(url);
-  await getDataFromDom()
+  await page.goto(theUrl)
+  await timeout(2000)
+
+  var firstUrl = await page.evaluate(() => {
+    var url = document.querySelector('.j-r-list-c-img > a').href;
+    return url
+  })
+  console.log('firstUrl:', firstUrl)
+
+  await page.goto(firstUrl);
+  await timeout(3000);
+  await getDataFromDom();
 
   for (let index = 0; index < 10000000; index++) {
     var nextPage = await page.$('.c-next-btn')
-    
+
     await nextPage.click()
     await timeout(6 * 1000 * Math.random());
     await getDataFromDom()
   }
-
   await page.close()
 }
