@@ -18,7 +18,6 @@ puppeteer.launch({ headless: false }).then(async (browser) => {
     /**
      * 段子
      */
-    // await require('./duanzi/pengfu.js')(browser, timeout, company)
     // await require('./duanzi/qiubai-detail.js')(browser, timeout, company)
     await require('./duanzi/gaoxiaogif-detail.js')(browser, timeout, company)
     // await require('./duanzi/budejie-detail.js')(browser, timeout, company)

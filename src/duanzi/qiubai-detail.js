@@ -40,7 +40,7 @@ module.exports = async (browser, timeout, key) => {
     
     console.log(data)
     // 上传图片
-    data = await common.uploadImg(data)
+    // data = await common.uploadImg(data)
 
     // 写文件
     await common.wirteFile(data, fromFileName)

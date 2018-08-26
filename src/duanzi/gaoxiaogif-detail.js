@@ -10,7 +10,7 @@ var fs = require("fs");
 var req = require('request-promise');
 var common = require('./common.js')
 
-var url = 'http://www.gaoxiaogif.cn/gif-1298.html'
+var url = 'http://www.gaoxiaogif.cn/gif-855.html'
 var fromName = '搞笑动图'
 var fromFileName = 'gaoxiaogif'
 
@@ -40,7 +40,7 @@ module.exports = async (browser, timeout, key) => {
 
     data = [data]
     // 上传图片
-    data = await common.uploadImg(data)
+    // data = await common.uploadImg(data)
 
     // 写文件
     await common.wirteFile(data, fromFileName)
